@@ -10,11 +10,12 @@ from app.bot_settings import BOT_TOKEN
 from database.database_structure import get_quiz_index, update_quiz_index, create_table
 from app.quiz_structure import get_question, new_quiz
 
+
 logging.basicConfig(level=logging.INFO)
+
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
-# lets
-right_answers = int
+
 
 @dp.callback_query(F.data == "right_answer")
 async def right_answer(callback: types.CallbackQuery):
