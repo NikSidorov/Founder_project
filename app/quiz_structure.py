@@ -8,10 +8,10 @@ async def get_question(message, user_id):
 
     # Получение текущего вопроса из словаря состояний пользователя
     current_question_index = await get_quiz_index(user_id)
-    correct_index = quiz_answer[current_question_index]['correct_option']
-    opts = quiz_answer[current_question_index]['options']
+    correct_index = quiz_answers[current_question_index]['correct_option']
+    opts = quiz_answers[current_question_index]['options']
     kb = generate_options_keyboard(opts, opts[correct_index])
-    await message.answer(f"{quiz_question[current_question_index]['question']}", reply_markup=kb)
+    await message.answer(f"{quiz_questions[current_question_index]['question']}", reply_markup=kb)
 
 
 async def new_quiz(message):

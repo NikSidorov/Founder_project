@@ -1,5 +1,5 @@
 
-quiz_question = [
+quiz_questions = [
     {
         'question': 'Что такое Python?'
     },

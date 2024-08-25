@@ -27,9 +27,9 @@ async def right_answer(callback: types.CallbackQuery):
     )
 
     current_question_index = await get_quiz_index(callback.from_user.id)
-    correct_option = quiz_answer[current_question_index]['correct_option']
+    correct_option = quiz_answers[current_question_index]['correct_option']
 
-    await callback.message.answer(f"Верно! Правильный ответ: {quiz_answer[current_question_index]['options'][correct_option]}")
+    await callback.message.answer(f"Верно! Правильный ответ: {quiz_answers[current_question_index]['options'][correct_option]}")
 
     current_question_index = await get_quiz_index(callback.from_user.id)
     # Обновление номера текущего вопроса в базе данных
@@ -40,7 +40,7 @@ async def right_answer(callback: types.CallbackQuery):
     await update_quiz_index(callback.from_user.id, current_question_index)
 
 
-    if current_question_index < len(quiz_question):
+    if current_question_index < len(quiz_questions):
         await get_question(callback.message, callback.from_user.id)
     else:
         # await get_result(callback.from_user.id)
@@ -59,16 +59,16 @@ async def wrong_answer(callback: types.CallbackQuery):
 
     # Получение текущего вопроса из словаря состояний пользователя
     current_question_index = await get_quiz_index(callback.from_user.id)
-    correct_option = quiz_answer[current_question_index]['correct_option']
+    correct_option = quiz_answers[current_question_index]['correct_option']
 
-    await callback.message.answer(f"Неправильно. Правильный ответ: {quiz_answer[current_question_index]['options'][correct_option]}")
+    await callback.message.answer(f"Неправильно. Правильный ответ: {quiz_answers[current_question_index]['options'][correct_option]}")
 
     # Обновление номера текущего вопроса в базе данных
     current_question_index += 1
     await update_quiz_index(callback.from_user.id, current_question_index)
 
 
-    if current_question_index < len(quiz_question):
+    if current_question_index < len(quiz_questions):
         await get_question(callback.message, callback.from_user.id)
     else:
         await callback.message.answer("Это был последний вопрос. Квиз завершен!")
