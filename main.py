@@ -13,7 +13,7 @@ from app.quiz_structure import get_question, new_quiz
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
-# lets
+
 right_answers = int
 
 @dp.callback_query(F.data == "right_answer")
