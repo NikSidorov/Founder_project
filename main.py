@@ -9,7 +9,6 @@ from log.quiz_question import *
 from app.bot_settings import BOT_TOKEN
 from database.database_structure import get_quiz_index, update_quiz_index, create_table
 from app.quiz_structure import get_question, new_quiz
-# from database.database_structure import right_answers
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=BOT_TOKEN)
