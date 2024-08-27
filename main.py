@@ -7,7 +7,7 @@ from aiogram import F
 from log.quiz_answer import *
 from log.quiz_question import *
 from app.bot_settings import BOT_TOKEN
-from database.database_structure import get_quiz_index, update_quiz_index, create_table
+from database.database_structure import get_quiz_index, update_quiz_index, create_table, counter, get_counter
 from app.quiz_structure import get_question, new_quiz
 
 
@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
-
+cool = 0
 @dp.callback_query(F.data == "right_answer")
 async def right_answer(callback: types.CallbackQuery):
 
@@ -28,16 +28,18 @@ async def right_answer(callback: types.CallbackQuery):
 
     current_question_index = await get_quiz_index(callback.from_user.id)
     correct_option = quiz_answers[current_question_index]['correct_option']
-
+    cool = await get_counter(callback.from_user.id)
     await callback.message.answer(f"Верно! Правильный ответ: {quiz_answers[current_question_index]['options'][correct_option]}")
-
+    cool += 1
     current_question_index = await get_quiz_index(callback.from_user.id)
+    print(cool)
+    await counter(callback.from_user.id, cool)
     # Обновление номера текущего вопроса в базе данных
     current_question_index += 1
 
     # print(current_question_index)
     
-    await update_quiz_index(callback.from_user.id, current_question_index)
+    await update_quiz_index(callback.from_user.id, current_question_index, cool)
 
 
     if current_question_index < len(quiz_questions):
@@ -45,8 +47,8 @@ async def right_answer(callback: types.CallbackQuery):
     else:
         # await get_result(callback.from_user.id)
         # res = (right_answers / current_question_index) * 100
-        await callback.message.answer("Это был последний вопрос. Квиз завершен!"
-                                      f"/n Ваш результат:  ")
+        await callback.message.answer("Это был последний вопрос. Квиз завершен!\n"
+                                      f"Ваш результат: {await get_counter(callback.from_user.id)} правильных ответов из 10")
 
 
 @dp.callback_query(F.data == "wrong_answer")
@@ -56,22 +58,23 @@ async def wrong_answer(callback: types.CallbackQuery):
         message_id=callback.message.message_id,
         reply_markup=None
     )
-
+    
     # Получение текущего вопроса из словаря состояний пользователя
     current_question_index = await get_quiz_index(callback.from_user.id)
     correct_option = quiz_answers[current_question_index]['correct_option']
-
+    cool = await get_counter(callback.from_user.id)
     await callback.message.answer(f"Неправильно. Правильный ответ: {quiz_answers[current_question_index]['options'][correct_option]}")
-
+    print(cool)
     # Обновление номера текущего вопроса в базе данных
     current_question_index += 1
-    await update_quiz_index(callback.from_user.id, current_question_index)
-
+    await update_quiz_index(callback.from_user.id, current_question_index, cool)
+    print(cool)
 
     if current_question_index < len(quiz_questions):
         await get_question(callback.message, callback.from_user.id)
     else:
-        await callback.message.answer("Это был последний вопрос. Квиз завершен!")
+        await callback.message.answer("Это был последний вопрос. Квиз завершен!\n"
+                                      f"Ваш результат: {await get_counter(callback.from_user.id)} правильных ответов из 10")
 
 
 @dp.message(Command("start"))

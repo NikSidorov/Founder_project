@@ -17,5 +17,5 @@ async def get_question(message, user_id):
 async def new_quiz(message):
     user_id = message.from_user.id
     current_question_index = 0
-    await update_quiz_index(user_id, current_question_index)
+    await update_quiz_index(user_id, current_question_index, right=0)
     await get_question(message, user_id)
